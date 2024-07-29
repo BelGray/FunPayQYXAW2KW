@@ -28,6 +28,22 @@ class DailyImage:
                 data_writer.close()
 
     @staticmethod
+    async def remove_current_path():
+        await DailyImage.init_json()
+        path = await DailyImage.get_path()
+        if path is not None:
+            if await DailyImage.exists(path):
+                os.remove(path)
+                with open(DailyImage.__json_file_name, "r") as file:
+                    data = json.load(file)
+                    file.close()
+                with open(DailyImage.__json_file_name, "w") as data_writer:
+                    data["image_path"] = None
+                    json.dump(data, data_writer)
+                    data_writer.close()
+
+
+    @staticmethod
     async def save(file_path: File):
         await DailyImage.init_json()
         path = DailyImage.__path + file_path.file_path.split("/")[-1]

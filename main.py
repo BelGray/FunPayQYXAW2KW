@@ -8,7 +8,7 @@ from aiogram.fsm.state import StatesGroup, State
 import database.db_config as tables
 from aiogram import types, F
 from aiogram.filters import Command, StateFilter
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputFile, FSInputFile
 
 from admin import Admin
 from daily_image_manager import DailyImage
@@ -54,16 +54,15 @@ async def av_24_callback(callback: types.CallbackQuery):
         await callback.answer("Невозможно на данный момент получить доступ (администратор не загрузил данные).",
                               show_alert=True)
         return
-    with open(path, "rb") as image:
-        await bot.send_photo(chat_id=callback.message.chat.id, photo=image)
-        conn.execute(
+    await bot.send_photo(chat_id=callback.message.chat.id, photo=FSInputFile(path))
+    conn.execute(
             db.update(tables.users).where(
                 tables.users.columns.telegram_id == callback.from_user.id
             ).values(
                 used=True
             )
         )
-        conn.commit()
+    conn.commit()
 
 
 @dp.callback_query(StateFilter(None), F.data == "upload_photo")
@@ -85,6 +84,7 @@ async def file_image_input(message: types.Message, state: FSMContext):
     try:
         file_id = message.photo[0].file_id
         file_path = await bot.get_file(file_id)
+        await DailyImage.remove_current_path()
         await DailyImage.save(file_path)
         await bot.send_message(chat_id=message.chat.id, text="Изображение сохранено успешно")
     except Exception as e:
