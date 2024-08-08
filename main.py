@@ -1,5 +1,6 @@
 import asyncio
 
+import BGLogger
 import sqlalchemy as db
 from aiogram.enums import ContentType
 from aiogram.fsm.context import FSMContext
@@ -13,9 +14,26 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, FSInputFil
 from admin import Admin
 from daily_image_manager import DailyImage
 from database.db_config import conn
-from loader import dp, bot, tribute
+from loader import dp, bot, tribute, release_notes
 from tools import user_register
 
+BGLogger.BGC.write(f"""
+     ! ДОБРО ПОЖАЛОВАТЬ !
+     
+Версия бота: {release_notes["version"]}
+Дата выхода версии: {release_notes["date"].strftime("%d.%m.%Y")}
+     
+О разработчике:
+     
+     Discord -> belgray
+     Discord (твинк) -> beldev
+     Telegram -> bel_gray
+     GitHub -> BelGray 
+     FunPay -> BelGray
+     
+Репозиторий с исходным кодом бота: https://github.com/BelGray/FunPayQYXAW2KW
+     
+    """, param=BGLogger.BGC.Param.BOLD, color=BGLogger.BGC.Color.GREEN)
 
 class FileImg(StatesGroup):
     img = State()
