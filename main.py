@@ -8,12 +8,12 @@ from aiogram.fsm.state import StatesGroup, State
 import database.db_config as tables
 from aiogram import types, F
 from aiogram.filters import Command, StateFilter
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InputFile, FSInputFile
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, FSInputFile
 
 from admin import Admin
 from daily_image_manager import DailyImage
 from database.db_config import conn
-from loader import dp, bot
+from loader import dp, bot, tribute
 from tools import user_register
 
 
@@ -26,7 +26,7 @@ async def start(message: types.Message):
     await user_register(message)
     start_text = "Ты настоящий sigma, если зашел в нашего бота!"
     buttons = [[InlineKeyboardButton(text="Выдать доступ на 24 часа", callback_data="av_24")],
-               [InlineKeyboardButton(text="Купить доступ на месяц", url="https://t.me/tribute")]]
+               [InlineKeyboardButton(text="Купить доступ на месяц", url=tribute)]]
     if await Admin.is_admin(message.from_user.id):
         buttons.append(
             [InlineKeyboardButton(text="Загрузить фотографию [только админ]", callback_data="upload_photo")]

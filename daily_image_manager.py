@@ -1,7 +1,5 @@
 import json
 import os.path
-from io import BytesIO
-from PIL import Image
 from aiogram.types import File
 
 from loader import bot
